@@ -18,14 +18,18 @@ export default function LoginCard() {
     const newErrors = {};
     if (!emailId) {
       newErrors.emailId = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(emailId)) {
-      newErrors.emailId = "Enter a valid email";
+    } else if (!/^[^\s@]+@[^\s@]+\.(com|in)$/.test(emailId)) {
+      newErrors.emailId = "Only .com or .in email addresses are allowed";
     }
 
     if (!password) {
       newErrors.password = "Password is required";
-    } else if (password.length < 6) {
-      newErrors.password = "Minimum 6 characters";
+    } else {
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+      if (!passwordRegex.test(password)) {
+        newErrors.password =
+          "Password must be at least 8 characters long, include uppercase, lowercase, number, and special character.";
+      }
     }
 
     setErrors(newErrors);
