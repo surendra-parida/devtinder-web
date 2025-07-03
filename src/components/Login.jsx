@@ -1,59 +1,78 @@
 import { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
-import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import { Eye, EyeOff } from "lucide-react";
+import axios from "axios";
 
 export default function LoginCard() {
-  const [emailId, setEmailId] = useState("surendraparida91@gmail.com");
-  const [password, setPassword] = useState("Surendra@123");
   const [showPassword, setShowPassword] = useState(false);
-  const [errors, setErrors] = useState({});
+  const [serverError, setServerError] = useState("");
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const validate = () => {
-    const newErrors = {};
-    if (!emailId) {
-      newErrors.emailId = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.(com|in)$/.test(emailId)) {
-      newErrors.emailId = "Only .com or .in email addresses are allowed";
-    }
-
-    if (!password) {
-      newErrors.password = "Password is required";
-    } else {
-      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-      if (!passwordRegex.test(password)) {
-        newErrors.password =
-          "Password must be at least 8 characters long, include uppercase, lowercase, number, and special character.";
-      }
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (validate()) {
-      // console.log("Login with:", email, password);
-      try {
-        const response = await axios.post(
-          BASE_URL + "/login",
-          {
-            emailId,
-            password,
-          },
-          { withCredentials: true }
+  const validationSchema = Yup.object().shape({
+    emailId: Yup.string()
+      .required("Email is required")
+      .matches(/^[^\s@]+@[^\s@]+\.(com)$/, "Please enter a valid email"),
+    password: Yup.string()
+      .required("Password is required")
+      .test("password-rules", "", function (value) {
+        const errors = [];
+        if (!value || value.length < 8)
+          errors.push("Must be at least 8 characters");
+        if (!/[A-Z]/.test(value))
+          errors.push("Must include one uppercase letter");
+        if (!/[a-z]/.test(value))
+          errors.push("Must include one lowercase letter");
+        if (!/[0-9]/.test(value)) errors.push("Must include one number");
+        if (!/[\W_]/.test(value))
+          errors.push("Must include one special character");
+        return (
+          errors.length === 0 ||
+          this.createError({ message: errors.join("\n") })
         );
-        dispatch(addUser(response.data));
-        return navigate("/");
-      } catch (err) {
-        console.log(err);
-      }
+      }),
+  });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    clearErrors,
+    setValue,
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+    mode: "onChange",
+    defaultValues: {
+      emailId: "surendraparida91@gmail.com",
+      password: "Surendra@123",
+    },
+  });
+
+  const onSubmit = async (data) => {
+    setServerError("");
+    try {
+      const response = await axios.post(
+        BASE_URL + "/login",
+        {
+          emailId: data.emailId,
+          password: data.password,
+        },
+        { withCredentials: true }
+      );
+      dispatch(addUser(response.data));
+      navigate("/");
+    } catch (err) {
+      setServerError(
+        err?.response?.data || "Something went wrong. Please try again."
+      );
+      console.log(err);
     }
   };
 
@@ -62,19 +81,29 @@ export default function LoginCard() {
       <div className="card card-border bg-base-300 w-96">
         <div className="card-body">
           <h2 className="card-title justify-center">Login</h2>
-          <form onSubmit={handleSubmit} className="space-y-4">
+
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-4"
+            noValidate
+          >
             <div>
               <label className="label">
                 <span className="label-text">Email</span>
               </label>
               <input
                 type="email"
+                {...register("emailId")}
                 className="input input-bordered w-full"
-                value={emailId}
-                onChange={(e) => setEmailId(e.target.value)}
+                onChange={(e) => {
+                  setValue("emailId", e.target.value);
+                  clearErrors("emailId");
+                }}
               />
               {errors.emailId && (
-                <p className="text-sm text-red-500 mt-1">{errors.emailId}</p>
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.emailId.message}
+                </p>
               )}
             </div>
 
@@ -85,9 +114,12 @@ export default function LoginCard() {
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
+                  {...register("password")}
                   className="input input-bordered w-full pr-10"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => {
+                    setValue("password", e.target.value);
+                    clearErrors("password");
+                  }}
                 />
                 <button
                   type="button"
@@ -98,15 +130,27 @@ export default function LoginCard() {
                 </button>
               </div>
               {errors.password && (
-                <p className="text-sm text-red-500 mt-1">{errors.password}</p>
+                <div className="text-sm text-red-500 mt-1 whitespace-pre-line">
+                  {errors.password.message}
+                </div>
               )}
             </div>
 
             <div className="form-control mt-4">
-              <button type="submit" className="btn btn-primary w-full">
-                Login
+              <button
+                type="submit"
+                className="btn btn-primary w-full"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Logging in..." : "Login"}
               </button>
             </div>
+
+            {serverError && (
+              <p className="text-center text-red-500 text-sm mt-2">
+                {serverError}
+              </p>
+            )}
 
             <div className="text-center text-sm">
               Don’t have an account?{" "}
