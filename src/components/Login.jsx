@@ -1,25 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { addUser } from "../utils/userSlice";
-import { BASE_URL } from "../utils/constants";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../utils/userSlice";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { Eye, EyeOff } from "lucide-react";
-import axios from "axios";
 
 export default function LoginCard() {
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError] = useState("");
+  const user = useSelector((store) => store.user.user);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  // Validation Schema
   const validationSchema = Yup.object().shape({
     emailId: Yup.string()
       .required("Email is required")
-      .matches(/^[^\s@]+@[^\s@]+\.(com)$/, "Please enter a valid email"),
+      .matches(/^[^\s@]+@[^\s@]+\.(com)$/, "Please enter a valid .com email"),
     password: Yup.string()
       .required("Password is required")
       .test("password-rules", "", function (value) {
@@ -43,45 +43,42 @@ export default function LoginCard() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
-    clearErrors,
-    setValue,
   } = useForm({
     resolver: yupResolver(validationSchema),
     mode: "onChange",
-    defaultValues: {
-      emailId: "surendraparida91@gmail.com",
-      password: "Surendra@123",
-    },
   });
 
+  // Submit Handler
   const onSubmit = async (data) => {
     setServerError("");
     try {
-      const response = await axios.post(
-        BASE_URL + "/login",
-        {
-          emailId: data.emailId,
-          password: data.password,
-        },
-        { withCredentials: true }
-      );
-      dispatch(addUser(response.data));
-      navigate("/");
+      const resultAction = await dispatch(loginUser(data));
+      if (loginUser.fulfilled.match(resultAction)) {
+        reset();
+        navigate("/", { replace: true });
+      } else {
+        setServerError(resultAction.payload || "Login failed. Try again.");
+      }
+      // eslint-disable-next-line no-unused-vars
     } catch (err) {
-      setServerError(
-        err?.response?.data || "Something went wrong. Please try again."
-      );
-      console.log(err);
+      setServerError("Login failed. Please try again.");
     }
   };
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      navigate("/", { replace: true });
+    }
+  }, [user, navigate]);
 
   return (
     <div className="flex justify-center my-10">
       <div className="card card-border bg-base-300 w-96">
         <div className="card-body">
           <h2 className="card-title justify-center">Login</h2>
-
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="space-y-4"
@@ -95,10 +92,6 @@ export default function LoginCard() {
                 type="email"
                 {...register("emailId")}
                 className="input input-bordered w-full"
-                onChange={(e) => {
-                  setValue("emailId", e.target.value);
-                  clearErrors("emailId");
-                }}
               />
               {errors.emailId && (
                 <p className="text-sm text-red-500 mt-1">
@@ -106,7 +99,6 @@ export default function LoginCard() {
                 </p>
               )}
             </div>
-
             <div>
               <label className="label">
                 <span className="label-text">Password</span>
@@ -116,10 +108,6 @@ export default function LoginCard() {
                   type={showPassword ? "text" : "password"}
                   {...register("password")}
                   className="input input-bordered w-full pr-10"
-                  onChange={(e) => {
-                    setValue("password", e.target.value);
-                    clearErrors("password");
-                  }}
                 />
                 <button
                   type="button"
@@ -135,7 +123,6 @@ export default function LoginCard() {
                 </div>
               )}
             </div>
-
             <div className="form-control mt-4">
               <button
                 type="submit"
@@ -145,13 +132,11 @@ export default function LoginCard() {
                 {isSubmitting ? "Logging in..." : "Login"}
               </button>
             </div>
-
             {serverError && (
               <p className="text-center text-red-500 text-sm mt-2">
                 {serverError}
               </p>
             )}
-
             <div className="text-center text-sm">
               Don’t have an account?{" "}
               <button
