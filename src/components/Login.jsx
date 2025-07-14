@@ -15,7 +15,6 @@ export default function LoginCard() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Validation Schema
   const validationSchema = Yup.object().shape({
     emailId: Yup.string()
       .required("Email is required")
@@ -50,7 +49,6 @@ export default function LoginCard() {
     mode: "onChange",
   });
 
-  // Submit Handler
   const onSubmit = async (data) => {
     setServerError("");
     try {
@@ -61,13 +59,11 @@ export default function LoginCard() {
       } else {
         setServerError(resultAction.payload || "Login failed. Try again.");
       }
-      // eslint-disable-next-line no-unused-vars
     } catch (err) {
       setServerError("Login failed. Please try again.");
     }
   };
 
-  // Redirect if already logged in
   useEffect(() => {
     if (user) {
       navigate("/", { replace: true });

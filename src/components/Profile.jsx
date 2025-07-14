@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import EditProfileModal from "./EditProfileModal";
 import UserDetailsCard from "./UserDetailsCard";
@@ -11,14 +11,9 @@ export default function Profile() {
   const [modalOpen, setModalOpen] = useState(false);
   const dispatch = useDispatch();
 
-  const handleChange = useCallback((e) => {
-    const { name, value } = e.target;
-    setEditedUser((prev) => ({ ...prev, [name]: value }));
-  }, []);
-
-  const handleSave = async () => {
+  const handleSave = async (newUserData) => {
     try {
-      await dispatch(updateUser(editedUser)).unwrap();
+      await dispatch(updateUser(newUserData)).unwrap();
       setModalOpen(false);
     } catch (err) {
       console.error("Update failed:", err);
@@ -45,7 +40,10 @@ export default function Profile() {
       <div className="mt-6 text-right">
         <button
           className="btn btn-primary btn-sm"
-          onClick={() => setModalOpen(true)}
+          onClick={() => {
+            setEditedUser({ ...user });
+            setModalOpen(true);
+          }}
         >
           Edit Profile
         </button>
@@ -54,7 +52,6 @@ export default function Profile() {
       {modalOpen && (
         <EditProfileModal
           editedUser={editedUser}
-          onChange={handleChange}
           onSave={handleSave}
           onCancel={handleCancel}
         />
