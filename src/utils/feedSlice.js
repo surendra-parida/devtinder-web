@@ -11,7 +11,7 @@ const initialState = {
 
 export const fetchFeed = createAsyncThunk(
   "feed/fetchFeed",
-  async ({ page = 1, limit = 10 } = {}, { rejectWithValue }) => {
+  async ({ page = 1, limit = 3 } = {}, { rejectWithValue }) => {
     try {
       const res = await axios.get(`/feed?page=${page}&limit=${limit}`);
       return res.data;

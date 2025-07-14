@@ -26,7 +26,7 @@ const NavBar = () => {
           <img
             src="./public/devtinder-icon.svg"
             alt="DevTinder logo"
-            className="h-10 w-10"
+            className="h-10 w-10 "
           />
           DevTinder
         </Link>
@@ -44,7 +44,11 @@ const NavBar = () => {
               className="btn btn-ghost btn-circle avatar"
             >
               <div className="w-10 rounded-full">
-                <img alt="user photo" src={user.photoUrl} />
+                <img
+                  alt="user photo"
+                  src={user.photoUrl}
+                  className="rounded-full object-cover border-2 border-indigo-500 cursor-pointer hover:opacity-80 transition"
+                />
               </div>
             </div>
             <ul

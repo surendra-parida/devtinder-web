@@ -29,7 +29,6 @@ export const logoutUser = createAsyncThunk(
       await axios.post("/logout");
       toast.success("Logged out successfully!");
       return null;
-      // eslint-disable-next-line no-unused-vars
     } catch (err) {
       return rejectWithValue("Logout failed");
     }
@@ -42,9 +41,33 @@ export const fetchUserProfile = createAsyncThunk(
     try {
       const res = await axios.get("/profile/view");
       return res.data;
-      // eslint-disable-next-line no-unused-vars
     } catch (err) {
       return rejectWithValue("Unauthorized");
+    }
+  }
+);
+
+export const updateUser = createAsyncThunk(
+  "user/updateUser",
+  async (
+    { firstName, lastName, age, gender, photoUrl, skills, about },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axios.patch("/profile/edit", {
+        firstName,
+        lastName,
+        age,
+        gender,
+        photoUrl,
+        skills,
+        about,
+      });
+      toast.success("Profile updated successfully!");
+      return response.data;
+    } catch (err) {
+      toast.error("Update failed!");
+      return rejectWithValue(err?.response?.data || "Update failed");
     }
   }
 );
@@ -85,6 +108,15 @@ const userSlice = createSlice({
         state.status = "succeeded";
       })
       .addCase(fetchUserProfile.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        console.log("succeeded", action.payload);
+        state.user = action.payload.data;
+        state.status = "succeeded";
+      })
+      .addCase(updateUser.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       });
