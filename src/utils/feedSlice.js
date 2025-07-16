@@ -39,7 +39,6 @@ const feedSlice = createSlice({
         state.status = "loading";
       })
       .addCase(fetchFeed.fulfilled, (state, action) => {
-        console.log(action.payload);
         state.feed = action.payload;
         state.totalPages = action.payload.totalPages;
         state.currentPage = action.payload.currentPage;

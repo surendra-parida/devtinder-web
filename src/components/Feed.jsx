@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchFeed, removeFeed } from "../utils/feedSlice";
 import FeedCard from "./FeedCard";
-import FeedHeader from "./FeedHeader";
+import Header from "./reusableComponents/Header";
 import Pagination from "./Pagination";
+import Heading from "./reusableComponents/Heading";
 
 export default function Feed() {
   const dispatch = useDispatch();
@@ -20,14 +21,16 @@ export default function Feed() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-10">
-      <h2 className="text-3xl font-bold text-center text-gray-400 mb-10">
-        Explore Talents
-      </h2>
+      {/* <h2 className="text-3xl font-bold text-center text-gray-400 mb-10">
+        FEED
+      </h2> */}
+      <Heading heading="FEED" />
 
-      <FeedHeader
+      <Header
         status={status}
         error={error}
-        feedLength={feed?.length || 0}
+        length={feed?.length || 0}
+        message="No profiles found."
       />
 
       <div className="grid gap-6">

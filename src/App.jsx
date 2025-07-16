@@ -1,24 +1,35 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Body from "./components/Body";
-import LoginCard from "./components/Login";
-import Profile from "./components/Profile";
-import Feed from "./components/Feed";
 import { Provider } from "react-redux";
-import appStore from "./utils/store";
 import { ToastContainer } from "react-toastify";
+import { lazy, Suspense } from "react";
+import appStore from "./utils/store";
 import "react-toastify/dist/ReactToastify.css";
+
+import Body from "./components/Body";
+
+const LoginCard = lazy(() => import("./components/Login"));
+const Profile = lazy(() => import("./components/Profile"));
+const Feed = lazy(() => import("./components/Feed"));
+const Connections = lazy(() => import("./components/Connections"));
+const Requests = lazy(() => import("./components/Requests"));
 
 function App() {
   return (
     <Provider store={appStore}>
       <BrowserRouter basename="/">
-        <Routes>
-          <Route path="/" element={<Body />}>
-            <Route path="/" element={<Feed />} />
-            <Route path="/login" element={<LoginCard />} />
-            <Route path="/profile" element={<Profile />} />
-          </Route>
-        </Routes>
+        <Suspense
+          fallback={<div className="text-center mt-10">Loading...</div>}
+        >
+          <Routes>
+            <Route path="/" element={<Body />}>
+              <Route index element={<Feed />} />
+              <Route path="login" element={<LoginCard />} />
+              <Route path="profile" element={<Profile />} />
+              <Route path="connections" element={<Connections />} />
+              <Route path="requests" element={<Requests />} />
+            </Route>
+          </Routes>
+        </Suspense>
       </BrowserRouter>
       <ToastContainer position="top-right" autoClose={3000} />
     </Provider>

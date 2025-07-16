@@ -1,4 +1,4 @@
-export default function FeedSkeleton({ count = 5 }) {
+export default function Skeleton({ count = 5 }) {
   return (
     <div className="grid gap-6">
       {Array.from({ length: count }).map((_, index) => (

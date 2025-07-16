@@ -1,4 +1,3 @@
-// utils/axiosInstance.js
 import axios from "axios";
 import { BASE_URL } from "./constants";
 import { toast } from "react-toastify";
@@ -11,7 +10,6 @@ const axiosInstance = axios.create({
   },
 });
 
-// Response Interceptor
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
