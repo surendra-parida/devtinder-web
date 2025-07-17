@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import EditProfileModal from "./EditProfileModal";
-import UserDetailsCard from "./UserDetailsCard";
-import { useDispatch } from "react-redux";
+import ProfileCard from "./reusableComponents/ProfileCard";
 import { updateUser } from "../utils/userSlice";
+import Heading from "./reusableComponents/Heading";
 
 export default function Profile() {
   const user = useSelector((state) => state.user.user);
@@ -25,6 +25,11 @@ export default function Profile() {
     setModalOpen(false);
   };
 
+  const handleEditClick = () => {
+    setEditedUser({ ...user });
+    setModalOpen(true);
+  };
+
   if (!user) {
     return (
       <div className="text-center mt-10 text-gray-500">
@@ -34,20 +39,14 @@ export default function Profile() {
   }
 
   return (
-    <div className="max-w-xl mx-auto mt-10 p-6 bg-base-300 shadow-md rounded-xl">
-      <UserDetailsCard user={user} />
-
-      <div className="mt-6 text-right">
-        <button
-          className="btn btn-primary btn-sm"
-          onClick={() => {
-            setEditedUser({ ...user });
-            setModalOpen(true);
-          }}
-        >
-          Edit Profile
-        </button>
-      </div>
+    <div className="w-6/12 mx-auto mt-10 px-4 sm:px-6 lg:px-8">
+      <Heading heading="PROFILE" />
+      <ProfileCard
+        user={user}
+        onPrimaryAction={handleEditClick}
+        primaryLabel="Edit Profile"
+        showActions={true}
+      />
 
       {modalOpen && (
         <EditProfileModal

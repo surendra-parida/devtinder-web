@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchFeed, removeFeed } from "../utils/feedSlice";
-import FeedCard from "./FeedCard";
 import Header from "./reusableComponents/Header";
 import Pagination from "./Pagination";
 import Heading from "./reusableComponents/Heading";
+import ProfileCard from "./reusableComponents/ProfileCard";
 
 export default function Feed() {
   const dispatch = useDispatch();
@@ -20,12 +20,8 @@ export default function Feed() {
   }, [dispatch, page]);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-10">
-      {/* <h2 className="text-3xl font-bold text-center text-gray-400 mb-10">
-        FEED
-      </h2> */}
+    <div className="w-6/12 mx-auto mt-10 px-4 sm:px-6 lg:px-8">
       <Heading heading="FEED" />
-
       <Header
         status={status}
         error={error}
@@ -35,7 +31,14 @@ export default function Feed() {
 
       <div className="grid gap-6">
         {feed?.map((user) => (
-          <FeedCard key={user._id} user={user} />
+          <ProfileCard
+            key={user._id}
+            user={user}
+            primaryLabel="Accept"
+            secondaryLabel="Decline"
+            onPrimaryAction={(id) => console.log("Accept", id)}
+            onSecondaryAction={(id) => console.log("Decline", id)}
+          />
         ))}
       </div>
 
