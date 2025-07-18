@@ -1,4 +1,3 @@
-// components/reusableComponents/ProfileCard.jsx
 export default function ProfileCard({
   user,
   onPrimaryAction,
@@ -20,11 +19,11 @@ export default function ProfileCard({
   } = user;
 
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 bg-base-300 shadow-md hover:shadow-lg border border-base-400 rounded-xl p-6 transition duration-200">
+    <div className="flex flex-col sm:flex-row sm:items-center gap-6 bg-base-300 shadow-md hover:shadow-lg border border-base-400 rounded-xl p-6 transition duration-200 w-full">
       <img
         src={photoUrl}
         alt={`${firstName} ${lastName}`}
-        className="w-24 h-24 rounded-full object-cover border-2 border-indigo-500"
+        className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-2 border-indigo-500 self-center sm:self-start"
       />
       <div className="flex-1 w-full">
         <h2 className="text-2xl font-bold text-gray-400">

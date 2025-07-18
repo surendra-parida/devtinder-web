@@ -21,7 +21,7 @@ const Connections = () => {
   };
 
   return (
-    <div className="w-6/12 mx-auto mt-10 px-4 sm:px-6 lg:px-8">
+    <div className="w-full max-w-4xl mx-auto mt-10 px-4 sm:px-6 lg:px-8 pb-32">
       <Heading heading="Connections" />
       <Header
         status={status}

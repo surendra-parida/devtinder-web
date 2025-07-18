@@ -17,27 +17,29 @@ const NavBar = () => {
   };
 
   return (
-    <div className="navbar bg-base-300 shadow-sm sticky top-0">
+    <div className="navbar bg-base-300 shadow-sm sticky top-0 z-50 px-4">
       <div className="flex-1">
-        <Link
-          to={"/"}
-          className="btn btn-ghost text-xl flex items-center gap-2"
-        >
+        <Link to="/" className="btn btn-ghost text-xl flex items-center gap-2">
           <img
             src="./public/devtinder-icon.svg"
             alt="DevTinder logo"
-            className="h-10 w-10 "
+            className="h-10 w-10"
           />
-          DevTinder
+          <span className="hidden sm:inline">DevTinder</span>
         </Link>
       </div>
+
       {user && (
-        <div className="flex gap-2">
-          <h3>
+        <div className="flex items-center gap-2 sm:gap-4 flex-col sm:flex-row text-sm sm:text-base">
+          <h3 className="hidden sm:block">
             Welcome Back{" "}
-            {user.firstName?.charAt(0).toUpperCase() + user.firstName?.slice(1)}
+            <span className="font-semibold">
+              {user.firstName?.charAt(0).toUpperCase() +
+                user.firstName?.slice(1)}
+            </span>
           </h3>
-          <div className="dropdown dropdown-end mx-5">
+
+          <div className="dropdown dropdown-end">
             <div
               tabIndex={0}
               role="button"
@@ -53,22 +55,16 @@ const NavBar = () => {
             </div>
             <ul
               tabIndex={0}
-              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-35 p-2 shadow"
+              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-10 mt-3 w-40 p-2 shadow"
             >
               <li>
-                <Link to={"/profile"} className="justify-between">
-                  Profile
-                </Link>
+                <Link to="/profile">Profile</Link>
               </li>
               <li>
-                <Link to={"/connections"} className="justify-between">
-                  Connections
-                </Link>
+                <Link to="/connections">Connections</Link>
               </li>
               <li>
-                <Link to={"/requests"} className="justify-between">
-                  Requests
-                </Link>
+                <Link to="/requests">Requests</Link>
               </li>
               <li>
                 <a onClick={handleLogout}>Logout</a>

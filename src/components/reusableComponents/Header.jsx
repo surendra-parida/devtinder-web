@@ -1,3 +1,4 @@
+import NoData from "./NoData";
 import Skeleton from "./Skeleton";
 
 export default function Header({ status, error, length, message }) {
@@ -10,7 +11,7 @@ export default function Header({ status, error, length, message }) {
   }
 
   if (status === "succeeded" && length === 0) {
-    return <p className="text-center text-gray-400 font-medium">{message}</p>;
+    return <NoData message={message} />;
   }
 
   return null;

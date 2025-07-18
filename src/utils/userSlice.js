@@ -1,4 +1,3 @@
-// utils/userSlice.js
 import { toast } from "react-toastify";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "./axiosInstance";
@@ -14,10 +13,35 @@ export const loginUser = createAsyncThunk(
   async ({ emailId, password }, { rejectWithValue }) => {
     try {
       const response = await axios.post("/login", { emailId, password });
-      toast.success("Login successful!");
       return response.data;
     } catch (err) {
-      return rejectWithValue(err?.response?.data || "Login failed");
+      return rejectWithValue(
+        typeof err?.response?.data === "string"
+          ? err.response.data
+          : err?.response?.data?.message || "Login failed"
+      );
+    }
+  }
+);
+
+export const signupUser = createAsyncThunk(
+  "user/signupUser",
+  async ({ firstName, lastName, emailId, password }, { rejectWithValue }) => {
+    try {
+      const response = await axios.post("/signup", {
+        firstName,
+        lastName,
+        emailId,
+        password,
+      });
+      toast.success("Signup successful please login!");
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(
+        typeof err?.response?.data === "string"
+          ? err.response.data
+          : err?.response?.data?.message || "Signup failed"
+      );
     }
   }
 );
@@ -51,7 +75,7 @@ export const updateUser = createAsyncThunk(
   "user/updateUser",
   async (
     { firstName, lastName, age, gender, photoUrl, skills, about },
-    { rejectWithValue, dispatch }
+    { rejectWithValue }
   ) => {
     try {
       const response = await axios.patch("/profile/edit", {
@@ -63,7 +87,6 @@ export const updateUser = createAsyncThunk(
         skills,
         about,
       });
-      dispatch();
       toast.success("Profile updated successfully!");
       return response.data;
     } catch (err) {
@@ -111,19 +134,28 @@ const userSlice = createSlice({
       .addCase(fetchUserProfile.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.user = action.payload?.data || action.payload;
+        state.status = "succeeded";
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+      .addCase(signupUser.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(signupUser.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.status = "succeeded";
+      })
+      .addCase(signupUser.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
       });
-    // .addCase(updateUser.fulfilled, (state, action) => {
-    //   console.log("succeeded", action.payload);
-    //   state.user = action.payload.data;
-    //   state.status = "succeeded";
-    // })
-    // .addCase(updateUser.rejected, (state, action) => {
-    //   state.status = "failed";
-    //   state.error = action.payload;
-    // });
   },
 });
 
 export const { removeUser } = userSlice.actions;
-
 export default userSlice.reducer;

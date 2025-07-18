@@ -39,7 +39,7 @@ export default function Profile() {
   }
 
   return (
-    <div className="w-6/12 mx-auto mt-10 px-4 sm:px-6 lg:px-8">
+    <div className="w-full max-w-4xl mx-auto mt-10 px-4 sm:px-6 lg:px-8 pb-32">
       <Heading heading="PROFILE" />
       <ProfileCard
         user={user}
