@@ -51,7 +51,7 @@ export const updateUser = createAsyncThunk(
   "user/updateUser",
   async (
     { firstName, lastName, age, gender, photoUrl, skills, about },
-    { rejectWithValue }
+    { rejectWithValue, dispatch }
   ) => {
     try {
       const response = await axios.patch("/profile/edit", {
@@ -63,6 +63,7 @@ export const updateUser = createAsyncThunk(
         skills,
         about,
       });
+      dispatch();
       toast.success("Profile updated successfully!");
       return response.data;
     } catch (err) {
@@ -110,16 +111,16 @@ const userSlice = createSlice({
       .addCase(fetchUserProfile.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
-      })
-      .addCase(updateUser.fulfilled, (state, action) => {
-        console.log("succeeded", action.payload);
-        state.user = action.payload.data;
-        state.status = "succeeded";
-      })
-      .addCase(updateUser.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.payload;
       });
+    // .addCase(updateUser.fulfilled, (state, action) => {
+    //   console.log("succeeded", action.payload);
+    //   state.user = action.payload.data;
+    //   state.status = "succeeded";
+    // })
+    // .addCase(updateUser.rejected, (state, action) => {
+    //   state.status = "failed";
+    //   state.error = action.payload;
+    // });
   },
 });
 

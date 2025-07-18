@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "./axiosInstance";
+import { toast } from "react-toastify";
 
 const initialState = {
   feed: [],
@@ -17,6 +18,28 @@ export const fetchFeed = createAsyncThunk(
       return res.data;
     } catch (err) {
       return rejectWithValue(err?.response?.data || "Fetching feed failed");
+    }
+  }
+);
+
+export const sendInterestRequest = createAsyncThunk(
+  "feed/sendInterestRequest",
+  async ({ userId, status }, { dispatch, rejectWithValue }) => {
+    try {
+      const res = await axios.post(`/request/send/${status}/${userId}`);
+      const message =
+        status === "interested"
+          ? "Interest sent successfully!"
+          : status === "ignored"
+          ? "Ignored successfully!"
+          : "Request completed!";
+      toast.success(message);
+      dispatch(fetchFeed());
+
+      return res.data;
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Something went wrong");
+      return rejectWithValue(err?.response?.data || "Request failed");
     }
   }
 );

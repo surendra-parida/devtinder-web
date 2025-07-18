@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 export default function EditProfileModal({ editedUser, onSave, onCancel }) {
   const {
@@ -31,6 +32,21 @@ export default function EditProfileModal({ editedUser, onSave, onCancel }) {
   };
 
   const onSubmit = (data) => {
+    const isSame =
+      data.firstName === editedUser.firstName &&
+      data.lastName === editedUser.lastName &&
+      data.emailId === editedUser.emailId &&
+      data.age === editedUser.age &&
+      data.gender === editedUser.gender &&
+      data.about === editedUser.about &&
+      photoUrl === (editedUser.photoUrl || "") &&
+      JSON.stringify(skills) === JSON.stringify(editedUser.skills || []);
+
+    if (isSame) {
+      toast.info("No changes made to the profile.");
+      return;
+    }
+
     onSave({
       ...editedUser,
       ...data,
