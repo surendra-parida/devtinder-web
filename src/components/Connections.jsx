@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchConnections } from "../utils/connsctionsSlice";
-import Header from "./reusableComponents/Header";
-import Heading from "./reusableComponents/Heading";
-import ProfileCard from "./reusableComponents/ProfileCard";
+import Header from "./Header";
+import Heading from "./Heading";
+import ProfileCard from "./ProfileCard";
 
 const Connections = () => {
   const dispatch = useDispatch();

@@ -1,10 +1,15 @@
+import { motion } from "framer-motion";
+
 export default function Skeleton({ count = 2 }) {
   return (
     <div className="grid gap-6">
       {Array.from({ length: count }).map((_, index) => (
-        <div
+        <motion.div
           key={index}
           className="flex flex-col sm:flex-row items-start sm:items-center gap-6 bg-base-300 shadow-md border border-base-400 rounded-xl p-6 animate-pulse"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: index * 0.1 }}
         >
           <div className="w-24 h-24 rounded-full bg-gray-300" />
 
@@ -26,7 +31,7 @@ export default function Skeleton({ count = 2 }) {
               <div className="h-8 w-24 bg-gray-300 rounded-md" />
             </div>
           </div>
-        </div>
+        </motion.div>
       ))}
     </div>
   );

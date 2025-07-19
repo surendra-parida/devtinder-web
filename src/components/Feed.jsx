@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchFeed, removeFeed, sendInterestRequest } from "../utils/feedSlice";
-import Header from "./reusableComponents/Header";
+import Header from "./Header";
 import Pagination from "./Pagination";
-import Heading from "./reusableComponents/Heading";
-import ProfileCard from "./reusableComponents/ProfileCard";
+import Heading from "./Heading";
+import ProfileCard from "./ProfileCard";
+import { motion } from "framer-motion";
 
 export default function Feed() {
   const dispatch = useDispatch();
@@ -20,7 +21,12 @@ export default function Feed() {
   }, [dispatch, page]);
 
   return (
-    <div className="w-6/12 mx-auto mt-10 px-4 sm:px-6 lg:px-8 pb-32">
+    <motion.div
+      className="w-full max-w-4xl mx-auto mt-10 px-4 sm:px-6 lg:px-8 pb-32"
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+    >
       <Heading heading="FEED" />
       <Header
         status={status}
@@ -59,6 +65,6 @@ export default function Feed() {
           onClear={() => dispatch(removeFeed())}
         />
       )}
-    </div>
+    </motion.div>
   );
 }

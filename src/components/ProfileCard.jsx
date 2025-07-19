@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 export default function ProfileCard({
   user,
   onPrimaryAction,
@@ -19,7 +20,12 @@ export default function ProfileCard({
   } = user;
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center gap-6 bg-base-300 shadow-md hover:shadow-lg border border-base-400 rounded-xl p-6 transition duration-200 w-full">
+    <motion.div
+      className="flex flex-col sm:flex-row sm:items-center gap-6 bg-base-300 shadow-md hover:shadow-lg border border-base-400 rounded-xl p-6 transition duration-200 w-full"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+    >
       <img
         src={photoUrl}
         alt={`${firstName} ${lastName}`}
@@ -64,12 +70,14 @@ export default function ProfileCard({
         {showActions && (primaryLabel || secondaryLabel) && (
           <div className="flex gap-3 mt-5 justify-end">
             {primaryLabel && (
-              <button
+              <motion.button
                 onClick={() => onPrimaryAction?.(_id)}
                 className="bg-indigo-600 text-white px-4 py-1.5 rounded-md text-sm font-medium hover:bg-indigo-700 transition"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
                 {primaryLabel}
-              </button>
+              </motion.button>
             )}
             {secondaryLabel && (
               <button
@@ -82,6 +90,6 @@ export default function ProfileCard({
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }

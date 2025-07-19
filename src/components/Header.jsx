@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import NoData from "./NoData";
 import Skeleton from "./Skeleton";
 
@@ -7,7 +8,15 @@ export default function Header({ status, error, length, message }) {
   }
 
   if (status === "failed") {
-    return <p className="text-center text-red-500 font-medium">{error}</p>;
+    return (
+      <motion.p
+        className="text-center text-red-500 font-medium"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+      >
+        Failed Please Try again!
+      </motion.p>
+    );
   }
 
   if (status === "succeeded" && length === 0) {

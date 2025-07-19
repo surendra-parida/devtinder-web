@@ -6,11 +6,12 @@ export default function InputField({
   error,
 }) {
   return (
-    <div>
-      <label className="label">
+    <div className="mb-5">
+      {/* <label className="label">
         <span className="label-text">{label}</span>
-      </label>
+      </label> */}
       <input
+        placeholder={label}
         type={type}
         {...register(name)}
         className="input input-bordered w-full"

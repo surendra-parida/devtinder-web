@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import EditProfileModal from "./EditProfileModal";
-import ProfileCard from "./reusableComponents/ProfileCard";
+import ProfileCard from "./ProfileCard";
 import { updateUser } from "../utils/userSlice";
-import Heading from "./reusableComponents/Heading";
+import Heading from "./Heading";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Profile() {
   const user = useSelector((state) => state.user.user);
@@ -39,7 +40,12 @@ export default function Profile() {
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto mt-10 px-4 sm:px-6 lg:px-8 pb-32">
+    <motion.div
+      className="w-full max-w-4xl mx-auto mt-10 px-4 sm:px-6 lg:px-8 pb-32"
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+    >
       <Heading heading="PROFILE" />
       <ProfileCard
         user={user}
@@ -48,13 +54,15 @@ export default function Profile() {
         showActions={true}
       />
 
-      {modalOpen && (
-        <EditProfileModal
-          editedUser={editedUser}
-          onSave={handleSave}
-          onCancel={handleCancel}
-        />
-      )}
-    </div>
+      <AnimatePresence>
+        {modalOpen && (
+          <EditProfileModal
+            editedUser={editedUser}
+            onSave={handleSave}
+            onCancel={handleCancel}
+          />
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }

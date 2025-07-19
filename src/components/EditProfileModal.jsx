@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { motion } from "framer-motion";
 
 export default function EditProfileModal({ editedUser, onSave, onCancel }) {
   const {
@@ -32,6 +33,10 @@ export default function EditProfileModal({ editedUser, onSave, onCancel }) {
   };
 
   const onSubmit = (data) => {
+    if (!["male", "female", "others"].includes(data.gender)) {
+      delete data.gender;
+    }
+
     const isSame =
       data.firstName === editedUser.firstName &&
       data.lastName === editedUser.lastName &&
@@ -57,17 +62,25 @@ export default function EditProfileModal({ editedUser, onSave, onCancel }) {
 
   return (
     <dialog open className="modal">
-      <div className="modal-box">
-        <h3 className="text-2xl font-bold text-center text-indigo-600 mb-6">
-          Edit Your Profile
+      <motion.div
+        className="modal-box w-[90%] max-w-sm p-4"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.8 }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+      >
+        <h3 className="text-xl font-semibold text-center text-indigo-600 mb-4">
+          Edit Profile
         </h3>
 
-        <div className="flex justify-center mb-4 relative">
+        <div className="flex justify-center mb-3 relative">
           <label htmlFor="photoUpload">
-            <img
+            <motion.img
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               src={photoUrl}
               alt="Profile"
-              className="w-28 h-28 rounded-full object-cover border-2 border-indigo-500 cursor-pointer hover:opacity-80 transition"
+              className="w-20 h-20 rounded-full object-cover border-2 border-indigo-500 cursor-pointer transition"
               title="Click to change photo"
             />
           </label>
@@ -80,74 +93,87 @@ export default function EditProfileModal({ editedUser, onSave, onCancel }) {
           />
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="form-control mb-2">
-            <label className="label">First Name</label>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 text-sm">
+          <div className="form-control">
+            <label className="label text-xs">First Name</label>
             <input
               type="text"
-              className="input input-bordered"
+              className="input input-sm input-bordered"
               {...register("firstName", { required: true, minLength: 4 })}
             />
             {errors.firstName && (
-              <p className="text-red-500 text-sm mt-1">
+              <p className="text-red-500 text-xs mt-1">
                 First name must be at least 4 characters
               </p>
             )}
           </div>
 
-          <div className="form-control mb-2">
-            <label className="label">Last Name</label>
+          <div className="form-control">
+            <label className="label text-xs">Last Name</label>
             <input
               type="text"
-              className="input input-bordered"
+              className="input input-sm input-bordered"
               {...register("lastName", { required: true, minLength: 4 })}
             />
             {errors.lastName && (
-              <p className="text-red-500 text-sm mt-1">
+              <p className="text-red-500 text-xs mt-1">
                 Last name must be at least 4 characters
               </p>
             )}
           </div>
 
-          <div className="form-control mb-2">
-            <label className="label">Email</label>
+          <div className="form-control">
+            <label className="label text-xs">Email</label>
             <input
               type="email"
               disabled
-              className="input input-bordered"
+              className="input input-sm input-bordered"
               {...register("emailId")}
             />
           </div>
 
-          <div className="form-control mb-2">
-            <label className="label">Age</label>
+          <div className="form-control">
+            <label className="label text-xs">Age</label>
             <input
               type="number"
-              className="input input-bordered"
+              className="input input-sm input-bordered"
               {...register("age", { required: true })}
             />
             {errors.age && (
-              <p className="text-red-500 text-sm mt-1">Age is required</p>
+              <p className="text-red-500 text-xs mt-1">Age is required</p>
             )}
           </div>
 
-          <div className="form-control mb-2">
-            <label className="label">Gender</label>
-            <select className="select select-bordered" {...register("gender")}>
+          <div className="form-control">
+            <label className="label text-xs">Gender</label>
+            <select
+              className="select select-sm select-bordered"
+              {...register("gender", {
+                required: "Please select a valid gender",
+                validate: (value) =>
+                  ["male", "female", "others"].includes(value) ||
+                  "Please select a valid gender",
+              })}
+            >
               <option value="">Select gender</option>
               <option value="male">Male</option>
               <option value="female">Female</option>
               <option value="others">Other</option>
             </select>
+            {errors.gender && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.gender.message}
+              </p>
+            )}
           </div>
 
-          <div className="form-control mb-4">
-            <label className="label">Skills</label>
-            <div className="flex flex-wrap gap-2 mb-2">
+          <div className="form-control">
+            <label className="label text-xs">Skills</label>
+            <div className="flex flex-wrap gap-1 mb-2">
               {skills.map((skill, index) => (
                 <div
                   key={index}
-                  className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-medium"
+                  className="bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full text-xs font-medium"
                 >
                   {skill}
                   <button
@@ -177,28 +203,34 @@ export default function EditProfileModal({ editedUser, onSave, onCancel }) {
                 }
               }}
               placeholder="Type skill and press Enter or comma"
-              className="input input-bordered"
+              className="input input-sm input-bordered"
             />
           </div>
 
-          <div className="form-control mb-2">
-            <label className="label">About</label>
+          <div className="form-control">
+            <label className="label text-xs">About</label>
             <textarea
-              className="textarea textarea-bordered"
+              rows={3}
+              className="textarea textarea-sm textarea-bordered"
               {...register("about")}
             />
           </div>
 
-          <div className="modal-action">
-            <button type="submit" className="btn btn-primary">
-              Save Profile
-            </button>
-            <button type="button" onClick={onCancel} className="btn">
+          <div className="modal-action flex justify-end gap-2 mt-4">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="btn btn-sm btn-primary"
+              type="submit"
+            >
+              Save
+            </motion.button>
+            <button type="button" onClick={onCancel} className="btn btn-sm">
               Cancel
             </button>
           </div>
         </form>
-      </div>
+      </motion.div>
     </dialog>
   );
 }

@@ -1,10 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
-import Heading from "./reusableComponents/Heading";
+import Heading from "./Heading";
 import { useEffect } from "react";
 import { fetchReceivedRequests } from "../utils/requestSlice";
-import Header from "./reusableComponents/Header";
-import ProfileCard from "./reusableComponents/ProfileCard";
+import Header from "./Header";
+import ProfileCard from "./ProfileCard";
 import { reviewRequest } from "../utils/requestSlice";
+import { motion } from "framer-motion";
 
 const Requests = () => {
   const dispatch = useDispatch();
@@ -15,7 +16,12 @@ const Requests = () => {
   }, [dispatch]);
 
   return (
-    <div className="w-full max-w-4xl mx-auto mt-10 px-4 sm:px-6 lg:px-8 pb-32">
+    <motion.div
+      className="w-full max-w-4xl mx-auto mt-10 px-4 sm:px-6 lg:px-8 pb-32"
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+    >
       <Heading heading="REQUESTS" />
       <Header
         status={status}
@@ -46,7 +52,7 @@ const Requests = () => {
           ))}
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };
 

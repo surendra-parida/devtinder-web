@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser, signupUser } from "../utils/userSlice";
-import AuthForm from "./reusableComponents/AuthForm";
+import AuthForm from "./AuthForm";
+import { motion } from "framer-motion";
 
 export default function LoginCard() {
   const [isLogin, setIsLogin] = useState(true);
@@ -46,11 +47,22 @@ export default function LoginCard() {
 
   return (
     <div className="flex justify-center items-center min-h-[80vh] px-4">
-      <div className="card bg-base-300 shadow-md w-full max-w-md">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+        className="card bg-base-300 shadow-md w-full max-w-md"
+      >
         <div className="card-body">
-          <h2 className="card-title justify-center text-2xl font-semibold mb-4">
+          <motion.h2
+            key={isLogin ? "login-title" : "signup-title"}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="card-title justify-center text-2xl font-semibold mb-4"
+          >
             {isLogin ? "Login" : "Sign Up"}
-          </h2>
+          </motion.h2>
           <AuthForm
             isLogin={isLogin}
             onSubmit={handleSubmit}
@@ -61,7 +73,7 @@ export default function LoginCard() {
             }}
           />
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
