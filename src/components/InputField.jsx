@@ -7,9 +7,6 @@ export default function InputField({
 }) {
   return (
     <div className="mb-5">
-      {/* <label className="label">
-        <span className="label-text">{label}</span>
-      </label> */}
       <input
         placeholder={label}
         type={type}

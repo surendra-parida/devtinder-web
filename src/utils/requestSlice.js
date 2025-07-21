@@ -15,7 +15,6 @@ export const fetchReceivedRequests = createAsyncThunk(
       const res = await axios.get("/user/requests/recieved");
       return res.data;
     } catch (err) {
-      console.error("Error fetching received requests:", err);
       return rejectWithValue(
         err?.response?.data?.message || "Failed to fetch received requests"
       );

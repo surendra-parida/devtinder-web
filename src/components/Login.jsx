@@ -8,35 +8,31 @@ import { motion } from "framer-motion";
 export default function LoginCard() {
   const [isLogin, setIsLogin] = useState(true);
   const [serverError, setServerError] = useState("");
-  const [redirectNow, setRedirectNow] = useState(false);
   const user = useSelector((store) => store.user.user);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user && redirectNow) {
-      navigate("/", { replace: true });
+    if (user) {
+      navigate("/profile", { replace: true });
     }
-  }, [user, navigate, redirectNow]);
+  }, [user, navigate]);
 
   const handleSubmit = async (data, reset) => {
     setServerError("");
+
     try {
       const resultAction = isLogin
         ? await dispatch(loginUser(data))
         : await dispatch(signupUser(data));
 
-      if (
-        (isLogin && loginUser.fulfilled.match(resultAction)) ||
-        (!isLogin && signupUser.fulfilled.match(resultAction))
-      ) {
-        if (isLogin) {
-          setRedirectNow(true);
-        } else {
-          reset();
-          setIsLogin(true);
-        }
+      const fulfilledAction = isLogin
+        ? loginUser.fulfilled.match(resultAction)
+        : signupUser.fulfilled.match(resultAction);
+
+      if (fulfilledAction) {
+        reset();
       } else {
         setServerError(resultAction.payload || "Authentication failed.");
       }
@@ -63,6 +59,7 @@ export default function LoginCard() {
           >
             {isLogin ? "Login" : "Sign Up"}
           </motion.h2>
+
           <AuthForm
             isLogin={isLogin}
             onSubmit={handleSubmit}

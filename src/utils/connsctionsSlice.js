@@ -12,10 +12,8 @@ export const fetchConnections = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const res = await axios.get(`/user/connections`);
-      console.log(res);
       return res.data;
     } catch (err) {
-      console.log(err);
       return rejectWithValue(
         err?.response?.data || "Fetching connections failed"
       );
