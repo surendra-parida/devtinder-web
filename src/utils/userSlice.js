@@ -73,19 +73,13 @@ export const fetchUserProfile = createAsyncThunk(
 
 export const updateUser = createAsyncThunk(
   "user/updateUser",
-  async (
-    { firstName, lastName, age, gender, photoUrl, skills, about },
-    { rejectWithValue }
-  ) => {
+  async (formData, { rejectWithValue }) => {
     try {
-      const response = await axios.patch("/profile/edit", {
-        firstName,
-        lastName,
-        age,
-        gender,
-        photoUrl,
-        skills,
-        about,
+      console.log("Hi surendra", formData);
+      const response = await axios.patch("/profile/edit", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
       toast.success("Profile updated successfully!");
       return response.data;

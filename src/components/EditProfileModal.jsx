@@ -1,6 +1,5 @@
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 
 export default function EditProfileModal({ editedUser, onSave, onCancel }) {
@@ -22,10 +21,12 @@ export default function EditProfileModal({ editedUser, onSave, onCancel }) {
   const [photoUrl, setPhotoUrl] = useState(editedUser.photoUrl || "");
   const [skills, setSkills] = useState(editedUser.skills || []);
   const [skillInput, setSkillInput] = useState("");
+  const [photoFile, setPhotoFile] = useState(null);
 
   const handlePhotoUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
+      setPhotoFile(file);
       const reader = new FileReader();
       reader.onloadend = () => setPhotoUrl(reader.result);
       reader.readAsDataURL(file);
@@ -33,31 +34,21 @@ export default function EditProfileModal({ editedUser, onSave, onCancel }) {
   };
 
   const onSubmit = (data) => {
-    if (!["male", "female", "others"].includes(data.gender)) {
-      delete data.gender;
+    const formData = new FormData();
+
+    formData.append("firstName", data.firstName);
+    formData.append("lastName", data.lastName);
+    formData.append("age", data.age);
+    formData.append("gender", data.gender);
+    formData.append("about", data.about);
+
+    formData.append("skills", JSON.stringify(skills));
+
+    if (photoFile) {
+      formData.append("photo", photoFile);
     }
 
-    const isSame =
-      data.firstName === editedUser.firstName &&
-      data.lastName === editedUser.lastName &&
-      data.emailId === editedUser.emailId &&
-      data.age === editedUser.age &&
-      data.gender === editedUser.gender &&
-      data.about === editedUser.about &&
-      photoUrl === (editedUser.photoUrl || "") &&
-      JSON.stringify(skills) === JSON.stringify(editedUser.skills || []);
-
-    if (isSame) {
-      toast.info("No changes made to the profile.");
-      return;
-    }
-
-    onSave({
-      ...editedUser,
-      ...data,
-      photoUrl,
-      skills,
-    });
+    onSave(formData);
   };
 
   return (
