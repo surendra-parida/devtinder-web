@@ -1,11 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
-import Heading from "./Heading";
+import Heading from "../../components/Heading";
 import { useEffect } from "react";
-import { fetchReceivedRequests } from "../utils/requestSlice";
-import Header from "./Header";
-import ProfileCard from "./ProfileCard";
-import { reviewRequest } from "../utils/requestSlice";
+import { fetchReceivedRequests, reviewRequest } from "../../utils/requestSlice";
+import ProfileCard from "../../components/ProfileCard";
 import { motion } from "framer-motion";
+import StatusBlock from "../../components/StatusBlock";
 
 const Requests = () => {
   const dispatch = useDispatch();
@@ -23,7 +22,7 @@ const Requests = () => {
       transition={{ duration: 0.4, ease: "easeOut" }}
     >
       <Heading heading="REQUESTS" />
-      <Header
+      <StatusBlock
         status={status}
         error={error}
         length={requests?.length || 0}

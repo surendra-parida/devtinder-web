@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser, signupUser } from "../utils/userSlice";
+import { loginUser, signupUser } from "../../utils/userSlice";
 import AuthForm from "./AuthForm";
 import { motion } from "framer-motion";
 

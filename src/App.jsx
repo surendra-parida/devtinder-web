@@ -5,13 +5,13 @@ import { lazy, Suspense } from "react";
 import appStore from "./utils/store";
 import "react-toastify/dist/ReactToastify.css";
 
-import Body from "./components/Body";
+import Body from "./layout/Body";
 
-const LoginCard = lazy(() => import("./components/Login"));
-const Profile = lazy(() => import("./components/Profile"));
-const Feed = lazy(() => import("./components/Feed"));
-const Connections = lazy(() => import("./components/Connections"));
-const Requests = lazy(() => import("./components/Requests"));
+const LoginCard = lazy(() => import("./features/auth/Login"));
+const Profile = lazy(() => import("./features/profile/Profile"));
+const Feed = lazy(() => import("./features/feed/Feed"));
+const Connections = lazy(() => import("./features/connections/Connections"));
+const Requests = lazy(() => import("./features/requests/Requests"));
 
 function App() {
   return (

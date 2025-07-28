@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import EditProfileModal from "./EditProfileModal";
-import ProfileCard from "./ProfileCard";
-import { updateUser } from "../utils/userSlice";
-import Heading from "./Heading";
+import ProfileCard from "../../components/ProfileCard";
+import { updateUser } from "../../utils/userSlice";
 import { motion, AnimatePresence } from "framer-motion";
+import Heading from "../../components/Heading";
 
 export default function Profile() {
   const user = useSelector((state) => state.user.user);

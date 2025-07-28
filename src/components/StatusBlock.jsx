@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import NoData from "./NoData";
 import Skeleton from "./Skeleton";
 
-export default function Header({ status, error, length, message }) {
+export default function StatusBlock({ status, error, length, message }) {
   if (status === "loading") {
     return <Skeleton count={5} />;
   }

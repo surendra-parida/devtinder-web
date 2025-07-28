@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchFeed, removeFeed, sendInterestRequest } from "../utils/feedSlice";
-import Header from "./Header";
-import Pagination from "./Pagination";
-import Heading from "./Heading";
-import ProfileCard from "./ProfileCard";
+import {
+  fetchFeed,
+  removeFeed,
+  sendInterestRequest,
+} from "../../utils/feedSlice";
+import Pagination from "../../components/Pagination";
+import Heading from "../../components/Heading";
+import ProfileCard from "../../components/ProfileCard";
 import { motion } from "framer-motion";
+import StatusBlock from "../../components/StatusBlock";
 
 export default function Feed() {
   const dispatch = useDispatch();
@@ -28,7 +32,7 @@ export default function Feed() {
       transition={{ duration: 0.4, ease: "easeOut" }}
     >
       <Heading heading="FEED" />
-      <Header
+      <StatusBlock
         status={status}
         error={error}
         length={feed?.length || 0}

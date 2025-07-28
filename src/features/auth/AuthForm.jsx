@@ -1,8 +1,8 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import PasswordInput from "./PasswordInput";
-import InputField from "./InputField";
+import PasswordInput from "../../components/PasswordInput";
+import InputField from "../../components/InputField";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function AuthForm({
