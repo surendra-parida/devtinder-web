@@ -12,7 +12,7 @@ const initialState = {
 
 export const fetchFeed = createAsyncThunk(
   "feed/fetchFeed",
-  async ({ page = 1, limit = 3 } = {}, { rejectWithValue }) => {
+  async ({ page = 1, limit = 10 } = {}, { rejectWithValue }) => {
     try {
       const res = await axios.get(`/feed?page=${page}&limit=${limit}`);
       return res.data;
@@ -24,18 +24,14 @@ export const fetchFeed = createAsyncThunk(
 
 export const sendInterestRequest = createAsyncThunk(
   "feed/sendInterestRequest",
-  async ({ userId, status }, { dispatch, rejectWithValue }) => {
+  async ({ userId, status }, { rejectWithValue }) => {
     try {
       const res = await axios.post(`/request/send/${status}/${userId}`);
       const message =
         status === "interested"
           ? "Interest sent successfully!"
-          : status === "ignored"
-          ? "Ignored successfully!"
-          : "Request completed!";
+          : "Ignored successfully!";
       toast.success(message);
-      dispatch(fetchFeed());
-
       return res.data;
     } catch (err) {
       toast.error(err?.response?.data?.message || "Something went wrong");

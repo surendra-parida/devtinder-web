@@ -6,7 +6,7 @@ const Footer = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className="footer flex flex-col sm:flex-row justify-between items-center bg-base-300 shadow-sm p-4 fixed bottom-0 w-full z-10"
+      className="footer flex flex-col sm:flex-row justify-between items-center bg-base-300 shadow-sm p-4 w-full z-10"
     >
       <aside className="flex items-center gap-3 mb-2 sm:mb-0">
         <motion.img

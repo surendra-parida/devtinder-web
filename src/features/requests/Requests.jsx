@@ -16,7 +16,7 @@ const Requests = () => {
 
   return (
     <motion.div
-      className="w-full max-w-4xl mx-auto mt-10 px-4 sm:px-6 lg:px-8 pb-32"
+      className="w-full max-w-4xl mx-auto mt-5 px-4 sm:px-6 lg:px-8"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}

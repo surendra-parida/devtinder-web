@@ -12,7 +12,6 @@ export default function Skeleton({ count = 2 }) {
           transition={{ delay: index * 0.1 }}
         >
           <div className="w-24 h-24 rounded-full bg-gray-300" />
-
           <div className="flex-1 w-full space-y-2">
             <div className="h-5 w-1/3 bg-gray-300 rounded" />
             <div className="h-4 w-1/2 bg-gray-300 rounded" />

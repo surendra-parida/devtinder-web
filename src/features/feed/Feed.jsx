@@ -1,74 +1,48 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchFeed,
-  removeFeed,
-  sendInterestRequest,
-} from "../../utils/feedSlice";
-import Pagination from "../../components/Pagination";
+import { fetchFeed, sendInterestRequest } from "../../utils/feedSlice";
 import Heading from "../../components/Heading";
-import ProfileCard from "../../components/ProfileCard";
-import { motion } from "framer-motion";
 import StatusBlock from "../../components/StatusBlock";
+import ProfileCardStack from "./ProfileCardStack";
+import ActionButtons from "./ActionButtons";
 
 export default function Feed() {
   const dispatch = useDispatch();
-  const [page, setPage] = useState(1);
-  const limit = 10;
+  const [page] = useState(1);
+  const limit = 100;
 
-  const { feed, status, error, totalPages } = useSelector(
-    (state) => state.feed
-  );
+  const { feed, status, error } = useSelector((state) => state.feed);
+  const users = feed?.users || [];
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     dispatch(fetchFeed({ page, limit }));
-  }, [dispatch, page]);
+  }, [dispatch, page, limit]);
+
+  const handleSwipe = (direction, userId) => {
+    const swipeStatus = direction === "right" ? "interested" : "ignored";
+    dispatch(sendInterestRequest({ userId, status: swipeStatus }));
+    setCurrentIndex((prev) => prev + 1);
+  };
+
+  const currentUser = users[currentIndex];
 
   return (
-    <motion.div
-      className="w-full max-w-4xl mx-auto mt-10 px-4 sm:px-6 lg:px-8 pb-32"
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
-    >
-      <Heading heading="FEED" />
-      <StatusBlock
-        status={status}
-        error={error}
-        length={feed?.length || 0}
-        message="Empty Feed"
-      />
-
-      <div className="grid gap-6">
-        {feed?.map((user) => (
-          <ProfileCard
-            key={user._id}
-            user={user}
-            primaryLabel="Interested"
-            secondaryLabel="Ignore"
-            onPrimaryAction={() =>
-              dispatch(
-                sendInterestRequest({ userId: user._id, status: "interested" })
-              )
-            }
-            onSecondaryAction={() =>
-              dispatch(
-                sendInterestRequest({ userId: user._id, status: "ignored" })
-              )
-            }
-          />
-        ))}
-      </div>
-
-      {feed?.length > 10 && (
-        <Pagination
-          page={page}
-          totalPages={totalPages}
-          onPrev={() => page > 1 && setPage(page - 1)}
-          onNext={() => page < totalPages && setPage(page + 1)}
-          onClear={() => dispatch(removeFeed())}
+    <div className="w-full max-w-4xl mx-auto mt-5 px-4 sm:px-6 lg:px-8">
+      <Heading heading="DISCOVER PEOPLE" />
+      <div className="w-full text-center ">
+        <StatusBlock
+          status={status}
+          error={error}
+          length={users.length - currentIndex}
+          message="No more profiles to swipe"
         />
-      )}
-    </motion.div>
+      </div>
+      <ProfileCardStack
+        users={users.slice(currentIndex)}
+        onSwipe={handleSwipe}
+      />
+      <ActionButtons currentUser={currentUser} onSwipe={handleSwipe} />
+    </div>
   );
 }
