@@ -12,12 +12,15 @@ export default function Feed() {
   const limit = 100;
 
   const { feed, status, error } = useSelector((state) => state.feed);
+  const { user } = useSelector((state) => state.user);
   const users = feed?.users || [];
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    dispatch(fetchFeed({ page, limit }));
-  }, [dispatch, page, limit]);
+    if (user) {
+      dispatch(fetchFeed({ page, limit }));
+    }
+  }, [dispatch, page, limit, user]);
 
   const handleSwipe = (direction, userId) => {
     const swipeStatus = direction === "right" ? "interested" : "ignored";

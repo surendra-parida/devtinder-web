@@ -71,7 +71,7 @@ export default function ProfileCard({
           <div className="flex gap-3 mt-5 justify-end">
             {primaryLabel && (
               <motion.button
-                onClick={() => onPrimaryAction?.(_id)}
+                onClick={() => onPrimaryAction?.(_id, user)}
                 className="bg-indigo-600 text-white px-4 py-1.5 rounded-md text-sm font-medium hover:bg-indigo-700 transition"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}

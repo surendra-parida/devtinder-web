@@ -1,13 +1,14 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchConnections } from "../../utils/connsctionsSlice";
+import { useNavigate } from "react-router-dom";
 import Heading from "../../components/Heading";
 import ProfileCard from "../../components/ProfileCard";
 import StatusBlock from "../../components/StatusBlock";
 
 const Connections = () => {
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   const { connections, status, error } = useSelector(
     (state) => state.connections
   );
@@ -16,8 +17,9 @@ const Connections = () => {
     dispatch(fetchConnections());
   }, [dispatch]);
 
-  const handleSendRequest = (id) => {
-    alert(`Message sent to user ID: ${id}`);
+  const handleSendMessage = (id, user) => {
+    // console.log(user);
+    navigate(`/chat/${id}`);
   };
 
   return (
@@ -36,7 +38,7 @@ const Connections = () => {
               key={user._id}
               user={user}
               primaryLabel="Send Message"
-              onPrimaryAction={handleSendRequest}
+              onPrimaryAction={handleSendMessage}
               showActions={true}
             />
           ))}

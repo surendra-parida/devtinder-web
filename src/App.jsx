@@ -6,6 +6,7 @@ import appStore from "./utils/store";
 import "react-toastify/dist/ReactToastify.css";
 
 import Body from "./layout/Body";
+import Chat from "./features/chat/chat";
 
 const LoginCard = lazy(() => import("./features/auth/Login"));
 const Profile = lazy(() => import("./features/profile/Profile"));
@@ -27,6 +28,7 @@ function App() {
               <Route path="profile" element={<Profile />} />
               <Route path="connections" element={<Connections />} />
               <Route path="requests" element={<Requests />} />
+              <Route path="chat/:targetUserId" element={<Chat />} />
             </Route>
           </Routes>
         </Suspense>
