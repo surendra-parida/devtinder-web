@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { createSocketConnection } from "../../utils/socket";
@@ -8,32 +8,36 @@ const Chat = () => {
   const user = useSelector((store) => store.user.user);
   const userId = user?._id;
   const firstName = user?.firstName;
+
+  const socketRef = useRef(null);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
     if (!userId) return;
-    let socket = createSocketConnection();
-    socket.emit("joinChat", { firstName, userId, targetUserId });
 
-    socket.on("messageRecieved", ({ firstName, text }) => {
-      setMessages((messages) => [...messages, { firstName, text }]);
+    socketRef.current = createSocketConnection();
+
+    socketRef.current.emit("joinChat", { targetUserId });
+
+    socketRef.current.on("messageRecieved", ({ firstName, text }) => {
+      setMessages((prev) => [...prev, { firstName, text }]);
     });
 
     return () => {
-      socket.disconnect();
+      socketRef.current.off("messageRecieved");
+      socketRef.current.disconnect();
     };
   }, [userId, targetUserId]);
 
   const sendMessage = () => {
     if (!input.trim()) return;
-    let socket = createSocketConnection();
-    socket.emit("sendMessage", {
-      firstName,
-      userId,
+
+    socketRef.current.emit("sendMessage", {
       targetUserId,
       text: input,
     });
+
     setInput("");
   };
 
