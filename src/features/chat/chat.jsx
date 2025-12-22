@@ -2,26 +2,37 @@ import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { createSocketConnection } from "../../utils/socket";
+import axiosInstance from "../../utils/axiosInstance";
 
 const Chat = () => {
   const { targetUserId } = useParams();
   const user = useSelector((store) => store.user.user);
   const userId = user?._id;
-  const firstName = user?.firstName;
-
   const socketRef = useRef(null);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
 
+  const fetchChatMessages = async () => {
+    const chat = await axiosInstance.get("/chat/" + targetUserId);
+    console.log(chat.data.messages);
+    const chatMessages = chat?.data?.messages.map((msg) => {
+      return {
+        senderId: msg.senderId._id,
+        text: msg.text,
+      };
+    });
+    setMessages(chatMessages);
+  };
+  useEffect(() => {
+    fetchChatMessages();
+  }, []);
+
   useEffect(() => {
     if (!userId) return;
-
     socketRef.current = createSocketConnection();
-
     socketRef.current.emit("joinChat", { targetUserId });
-
-    socketRef.current.on("messageRecieved", ({ firstName, text }) => {
-      setMessages((prev) => [...prev, { firstName, text }]);
+    socketRef.current.on("messageRecieved", ({ senderId, text }) => {
+      setMessages((prev) => [...prev, { senderId, text }]);
     });
 
     return () => {
@@ -29,6 +40,7 @@ const Chat = () => {
       socketRef.current.disconnect();
     };
   }, [userId, targetUserId]);
+  console.log(messages);
 
   const sendMessage = () => {
     if (!input.trim()) return;
@@ -49,10 +61,9 @@ const Chat = () => {
             <div
               key={i}
               className={`chat ${
-                msg.firstName === firstName ? "chat-end" : "chat-start"
+                msg.senderId === userId ? "chat-end" : "chat-start"
               }`}
             >
-              <div className="chat-header">{msg.firstName}</div>
               <div className="chat-bubble">{msg.text}</div>
             </div>
           ))}
