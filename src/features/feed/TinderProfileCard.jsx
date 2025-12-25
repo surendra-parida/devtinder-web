@@ -20,11 +20,7 @@ export default function TinderProfileCard({ user, isFront, onSwipe }) {
           rotate: direction === "right" ? 25 : -25,
           scale: 1.05,
           opacity: 0,
-          transition: {
-            type: "spring",
-            stiffness: 300,
-            damping: 20,
-          },
+          transition: { type: "spring", stiffness: 300, damping: 20 },
         })
         .then(() => onSwipe(direction, _id));
     } else {
@@ -33,46 +29,47 @@ export default function TinderProfileCard({ user, isFront, onSwipe }) {
   };
 
   useEffect(() => {
-    controls.set({ opacity: 1 });
-  }, []);
+    controls.set({
+      scale: isFront ? 1 : 0.95,
+      opacity: isFront ? 1 : 0.75,
+      y: isFront ? 0 : 14,
+    });
+  }, [isFront]);
 
   return (
     <motion.div
-      initial={{ scale: 0.95, opacity: 0 }}
+      initial={{ scale: 0.96, opacity: 0 }}
       animate={controls}
       drag={isFront ? "x" : false}
       dragConstraints={{ left: 0, right: 0 }}
-      style={{ x, rotate: x.get() / 30 }}
+      style={{ x, rotate: isFront ? x.get() / 30 : 0 }}
       onDragEnd={handleDragEnd}
-      className={`absolute w-full h-full top-0 bg-gray-300 rounded-2xl overflow-hidden shadow-md flex flex-col transition-all duration-300 ${
-        isFront ? "z-10" : "z-0"
-      }`}
+      className={`absolute top-0 w-full h-full rounded-2xl overflow-hidden
+        bg-black border border-white/10 shadow-2xl
+        ${isFront ? "z-10" : "z-0"}
+      `}
     >
-      <div className="relative w-full h-2/3 bg-gray-100">
+      <div className="relative w-full h-2/3">
         <img
           src={photoUrl || "/default-user.jpg"}
           alt={`${firstName} ${lastName}`}
           className="w-full h-full object-cover"
         />
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-        <div className="absolute bottom-5 left-5 text-white drop-shadow-lg">
-          <h2 className="text-2xl sm:text-3xl font-bold">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+        <div className="absolute bottom-5 left-5 text-white">
+          <h2 className="text-2xl font-semibold">
             {firstName} {lastName}
-            {age && (
-              <span className="ml-2 text-lg sm:text-xl font-medium">
-                • {age}
-              </span>
-            )}
+            {age && <span className="ml-2 text-lg text-white/70">• {age}</span>}
           </h2>
           {gender && (
-            <p className="text-sm text-gray-300 capitalize">{gender}</p>
+            <p className="text-sm text-white/60 capitalize">{gender}</p>
           )}
         </div>
       </div>
 
-      <div className="p-4 flex flex-col justify-between h-1/3 space-y-3">
+      <div className="h-1/3 px-4 py-5 bg-neutral-900 flex flex-col justify-between gap-3">
         {about && (
-          <p className="text-gray-700 text-sm text-center line-clamp-3">
+          <p className="text-sm text-neutral-300 text-center line-clamp-3">
             {about}
           </p>
         )}
@@ -82,7 +79,9 @@ export default function TinderProfileCard({ user, isFront, onSwipe }) {
             {skills.map((skill, idx) => (
               <li
                 key={idx}
-                className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-medium"
+                className="px-3 py-1 rounded-full text-xs font-medium
+                  bg-indigo-600/15 text-indigo-300
+                  border border-indigo-500/25"
               >
                 {skill}
               </li>

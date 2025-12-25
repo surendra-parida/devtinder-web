@@ -17,9 +17,11 @@ const Connections = () => {
     dispatch(fetchConnections());
   }, [dispatch]);
 
-  const handleSendMessage = (id, user) => {
-    // console.log(user);
-    navigate(`/chat/${id}`);
+  const handleSendMessage = (id, { firstName, lastName }) => {
+    console.log(firstName, lastName);
+    navigate(`/chat/${id}`, {
+      state: { firstName, lastName },
+    });
   };
 
   return (
