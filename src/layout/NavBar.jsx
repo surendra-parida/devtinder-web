@@ -25,7 +25,7 @@ const NavBar = () => {
     >
       <div className="flex-1">
         <Link
-          to={user?._id && !user.error ? "/" : "/login"}
+          to={user?._id && !user.error ? "/feed" : "/login"}
           className="btn btn-ghost text-xl flex items-center gap-2"
         >
           <motion.img

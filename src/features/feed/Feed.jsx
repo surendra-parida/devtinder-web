@@ -52,7 +52,7 @@ export default function Feed() {
         />
       </div>
 
-      {users.length > currentIndex && (
+      {status === "succeeded" && users.length > currentIndex && (
         <ProfileCardStack
           ref={cardRef}
           users={users.slice(currentIndex)}
@@ -60,7 +60,7 @@ export default function Feed() {
         />
       )}
 
-      {currentUser && (
+      {status === "succeeded" && currentUser && (
         <ActionButtons currentUser={currentUser} onSwipe={handleButtonSwipe} />
       )}
     </div>

@@ -1,9 +1,8 @@
 import { motion } from "framer-motion";
 import { AlertTriangle, Inbox } from "lucide-react";
-import NoData from "./NoData";
 import Skeleton from "./Skeleton";
 
-export default function StatusBlock({ status, error, length, message }) {
+export default function StatusBlock({ status, length, message }) {
   if (status === "loading") {
     return (
       <div className="bg-base-900/40 rounded-xl p-6">

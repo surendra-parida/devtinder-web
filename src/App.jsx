@@ -19,11 +19,15 @@ function App() {
     <Provider store={appStore}>
       <BrowserRouter basename="/">
         <Suspense
-          fallback={<div className="text-center mt-10">Loading...</div>}
+          fallback={
+            <div className="min-h-screen flex items-center justify-center">
+              <div className="animate-pulse h-6 w-40 bg-gray-300 rounded" />
+            </div>
+          }
         >
           <Routes>
             <Route path="/" element={<Body />}>
-              <Route index element={<Feed />} />
+              <Route path="feed" element={<Feed />} />
               <Route path="login" element={<LoginCard />} />
               <Route path="profile" element={<Profile />} />
               <Route path="connections" element={<Connections />} />

@@ -68,7 +68,15 @@ export default function EditProfileModal({ editedUser, onSave, onCancel }) {
   };
 
   return (
-    <dialog open className="modal">
+    <dialog
+      open
+      className="modal"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          onCancel();
+        }
+      }}
+    >
       <motion.div
         className="modal-box w-[90%] max-w-sm p-4"
         initial={{ opacity: 0, scale: 0.8 }}

@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useState } from "react";
 export default function ProfileCard({
   user,
   onPrimaryAction,
@@ -18,6 +19,8 @@ export default function ProfileCard({
     gender,
     emailId,
   } = user;
+  const [imgError, setImgError] = useState(false);
+  const initials = `${firstName?.[0] || ""}${lastName?.[0] || ""}`;
 
   return (
     <motion.div
@@ -26,11 +29,23 @@ export default function ProfileCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
     >
-      <img
-        src={photoUrl}
-        alt={`${firstName} ${lastName}`}
-        className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-2 border-indigo-500 self-center sm:self-start"
-      />
+      <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-2 border-indigo-500 overflow-hidden flex items-center justify-center bg-gray-100 self-center sm:self-start">
+        {!imgError && (
+          <img
+            src={photoUrl}
+            alt={`${firstName} ${lastName}`}
+            className="w-full h-full object-cover"
+            onError={() => setImgError(true)}
+          />
+        )}
+
+        {imgError && (
+          <span className="text-indigo-500 font-semibold text-lg sm:text-xl">
+            {initials}
+          </span>
+        )}
+      </div>
+
       <div className="flex-1 w-full">
         <h2 className="text-2xl font-bold text-gray-400">
           {firstName} {lastName}
