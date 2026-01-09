@@ -1,28 +1,36 @@
 import { motion, useMotionValue, useAnimation } from "framer-motion";
-import { useEffect } from "react";
+import { useEffect, forwardRef, useImperativeHandle } from "react";
 
-export default function TinderProfileCard({ user, isFront, onSwipe }) {
+const TinderProfileCard = forwardRef(({ user, isFront, onSwipe }, ref) => {
   const { _id, firstName, lastName, about, photoUrl, skills, age, gender } =
     user;
 
   const x = useMotionValue(0);
   const controls = useAnimation();
 
+  const swipeCard = (direction) => {
+    controls
+      .start({
+        x: direction === "right" ? 1000 : -1000,
+        rotate: direction === "right" ? 25 : -25,
+        scale: 1.05,
+        opacity: 0,
+        transition: { type: "spring", stiffness: 300, damping: 20 },
+      })
+      .then(() => onSwipe(direction, _id));
+  };
+
+  useImperativeHandle(ref, () => ({
+    swipeLeft: () => swipeCard("left"),
+    swipeRight: () => swipeCard("right"),
+  }));
+
   const handleDragEnd = (_, info) => {
     const offset = info.offset.x;
     const velocity = info.velocity.x;
 
     if (Math.abs(offset) > 100 || Math.abs(velocity) > 500) {
-      const direction = offset > 0 ? "right" : "left";
-      controls
-        .start({
-          x: direction === "right" ? 1000 : -1000,
-          rotate: direction === "right" ? 25 : -25,
-          scale: 1.05,
-          opacity: 0,
-          transition: { type: "spring", stiffness: 300, damping: 20 },
-        })
-        .then(() => onSwipe(direction, _id));
+      swipeCard(offset > 0 ? "right" : "left");
     } else {
       controls.start({ x: 0, rotate: 0, scale: 1, opacity: 1 });
     }
@@ -34,7 +42,7 @@ export default function TinderProfileCard({ user, isFront, onSwipe }) {
       opacity: isFront ? 1 : 0.75,
       y: isFront ? 0 : 14,
     });
-  }, [isFront]);
+  }, [isFront, controls]);
 
   return (
     <motion.div
@@ -45,9 +53,9 @@ export default function TinderProfileCard({ user, isFront, onSwipe }) {
       style={{ x, rotate: isFront ? x.get() / 30 : 0 }}
       onDragEnd={handleDragEnd}
       className={`absolute top-0 w-full h-full rounded-2xl overflow-hidden
-        bg-black border border-white/10 shadow-2xl
-        ${isFront ? "z-10" : "z-0"}
-      `}
+          bg-black border border-white/10
+          ${isFront ? "z-10" : "z-0"}
+        `}
     >
       <div className="relative w-full h-2/3">
         <img
@@ -80,8 +88,8 @@ export default function TinderProfileCard({ user, isFront, onSwipe }) {
               <li
                 key={idx}
                 className="px-3 py-1 rounded-full text-xs font-medium
-                  bg-indigo-600/15 text-indigo-300
-                  border border-indigo-500/25"
+                    bg-indigo-600/15 text-indigo-300
+                    border border-indigo-500/25"
               >
                 {skill}
               </li>
@@ -91,4 +99,8 @@ export default function TinderProfileCard({ user, isFront, onSwipe }) {
       </div>
     </motion.div>
   );
-}
+});
+
+TinderProfileCard.displayName = "TinderProfileCard";
+
+export default TinderProfileCard;
